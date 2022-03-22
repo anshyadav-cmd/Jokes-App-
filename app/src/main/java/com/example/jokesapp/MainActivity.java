@@ -57,6 +57,8 @@ public class MainActivity extends AppCompatActivity implements JokeLikeListener 
             mCardAdapter.add(joke.getJokeText());
         }
         mCardStack.setAdapter(mCardAdapter);
+
+
     }
 
     private String loadJSONFromAssets() {
@@ -91,6 +93,7 @@ public class MainActivity extends AppCompatActivity implements JokeLikeListener 
     public void jokeIsLiked(Joke joke) {
         if(joke.isJokeLiked()){
             mJokeManger.saveJoke(joke);
+
         }else {
             mJokeManger.deleteJoke(joke);
         }

@@ -13,6 +13,9 @@ import androidx.annotation.Nullable;
 
 import com.example.jokesapp.R;
 import com.example.jokesapp.model.Joke;
+import com.example.jokesapp.model.JokeManger;
+
+import java.util.List;
 
 public class CardsDataAdapter extends ArrayAdapter<String> {
 
@@ -20,6 +23,7 @@ public class CardsDataAdapter extends ArrayAdapter<String> {
     private boolean isLiked = false;
     private JokeLikeListener mJokeLikeListener;
     private Joke mJoke;
+    private JokeManger mJokeManger;
 
     @Override
     public void add(@Nullable String object) {
@@ -30,6 +34,7 @@ public class CardsDataAdapter extends ArrayAdapter<String> {
         super(context, resource);
         mContext = context;
         mJokeLikeListener = (JokeLikeListener) context;
+        mJokeManger = new JokeManger(context);
     }
 
     @Override
@@ -40,6 +45,7 @@ public class CardsDataAdapter extends ArrayAdapter<String> {
         ImageButton likeButton = contentView.findViewById(R.id.likeButton);
         ImageButton shareButton = contentView.findViewById(R.id.shareButton);
 
+        alreadyLiked(likeButton, position);
 
         likeButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -61,5 +67,17 @@ public class CardsDataAdapter extends ArrayAdapter<String> {
         });
 
         return contentView;
+    }
+    public void alreadyLiked(ImageButton imageButton, int position){
+        List<Joke> jokes = mJokeManger.retiriveJokes();
+        for(Joke joke : jokes) {
+            if(getItem(position).equals(joke.getJokeText())) {
+                if (joke.isJokeLiked()) {
+                    imageButton.setImageResource(R.drawable.liked_filled);
+                } else {
+                    imageButton.setImageResource((R.drawable.like_empty));
+                }
+            }
+        }
     }
 }
