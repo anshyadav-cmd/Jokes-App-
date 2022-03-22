@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".fragments.FavJokesFragment"
-    android:id="@+id/fav_jokes_container">
+    >
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv"

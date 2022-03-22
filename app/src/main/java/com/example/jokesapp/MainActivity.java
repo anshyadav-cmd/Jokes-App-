@@ -1,8 +1,12 @@
 package com.example.jokesapp;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 
 import com.example.jokesapp.controller.CardsDataAdapter;
 import com.example.jokesapp.controller.JokeLikeListener;
@@ -90,5 +94,17 @@ public class MainActivity extends AppCompatActivity implements JokeLikeListener 
         }else {
             mJokeManger.deleteJoke(joke);
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.my_menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        startActivity(new Intent(MainActivity.this, FavJokesActivity.class));
+        return super.onOptionsItemSelected(item);
     }
 }
