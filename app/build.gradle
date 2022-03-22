@@ -31,6 +31,7 @@ android {
 dependencies {
 
 //    implementation 'com.android.support:multidex:1.0.3'
+    implementation 'com.daimajia.androidanimations:library:2.4@aar'
     implementation 'com.arasthel:asyncjob-library:1.0.3'
     implementation 'com.github.wenchaojiang:AndroidSwipeableCardStack:0.1.6'
     implementation 'androidx.appcompat:appcompat:1.4.1'

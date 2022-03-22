@@ -2,6 +2,7 @@ package com.example.jokesapp.controller;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -11,7 +12,10 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.preference.PreferenceManager;
 
+import com.daimajia.androidanimations.library.Techniques;
+import com.daimajia.androidanimations.library.YoYo;
 import com.example.jokesapp.R;
 import com.example.jokesapp.model.Joke;
 import com.example.jokesapp.model.JokeManger;
@@ -25,6 +29,8 @@ public class CardsDataAdapter extends ArrayAdapter<String> {
     private JokeLikeListener mJokeLikeListener;
     private Joke mJoke;
     private JokeManger mJokeManger;
+    private SharedPreferences mSharedPreferences;
+
 
     @Override
     public void add(@Nullable String object) {
@@ -36,6 +42,8 @@ public class CardsDataAdapter extends ArrayAdapter<String> {
         mContext = context;
         mJokeLikeListener = (JokeLikeListener) context;
         mJokeManger = new JokeManger(context);
+
+        mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
     }
 
     @Override
@@ -47,7 +55,14 @@ public class CardsDataAdapter extends ArrayAdapter<String> {
         // Like Button coding
         ImageButton likeButton = contentView.findViewById(R.id.likeButton);
 
-        alreadyLiked(likeButton, position);
+//        alreadyLiked(likeButton, position);
+
+        if(mSharedPreferences.contains(getItem(position))){
+            likeButton.setImageResource(R.drawable.liked_filled);
+            isLiked = true;
+        }else {
+            isLiked = false;
+        }
 
         likeButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -56,7 +71,10 @@ public class CardsDataAdapter extends ArrayAdapter<String> {
                 if(!isLiked){
                     likeButton.setImageResource(R.drawable.liked_filled);
                     isLiked = true;
-
+                    YoYo.with(Techniques.Tada)
+                            .duration(400)
+                            .repeat(0)
+                            .playOn(likeButton);
                     mJoke = new Joke(getItem(position), true);
                     mJokeLikeListener.jokeIsLiked(mJoke);
                 }else {
@@ -84,17 +102,17 @@ public class CardsDataAdapter extends ArrayAdapter<String> {
 
         return contentView;
     }
-
-    public void alreadyLiked(ImageButton imageButton, int position){
-        List<Joke> jokes = mJokeManger.retiriveJokes();
-        for(Joke joke : jokes) {
-            if(getItem(position).equals(joke.getJokeText())) {
-                if (joke.isJokeLiked()) {
-                    imageButton.setImageResource(R.drawable.liked_filled);
-                } else {
-                    imageButton.setImageResource((R.drawable.like_empty));
-                }
-            }
-        }
-    }
+        // bug was i didn't update to value of  "liked" as this function is bulcky that's why i am using the instructed one
+//    public void alreadyLiked(ImageButton imageButton, int position){
+//        List<Joke> jokes = mJokeManger.retiriveJokes();
+//        for(Joke joke : jokes) {
+//            if(getItem(position).equals(joke.getJokeText())) {
+//                if (joke.isJokeLiked()) {
+//                    imageButton.setImageResource(R.drawable.liked_filled);
+//                } else {
+//                    imageButton.setImageResource((R.drawable.like_empty));
+//                }
+//            }
+//        }
+//    }
 }
