@@ -74,8 +74,49 @@ public class MainActivity extends AppCompatActivity implements JokeLikeListener 
                         // Do some background work
                         try {
                             JSONObject rootJSONObject = new JSONObject(loadJSONFromAssets());
-                            JSONArray fatJokes = rootJSONObject.getJSONArray("fat");
-                            addJokesToArrayList(fatJokes, mAllJokes);
+                            JSONArray jsonJokes = rootJSONObject.getJSONArray("fat");
+
+                            addJokesToArrayList(jsonJokes, mAllJokes);
+                            jsonJokes = rootJSONObject.getJSONArray("stupid");
+
+                            addJokesToArrayList(jsonJokes, mAllJokes);
+                            jsonJokes = rootJSONObject.getJSONArray("ugly");
+
+                            addJokesToArrayList(jsonJokes, mAllJokes);
+                            jsonJokes = rootJSONObject.getJSONArray("nasty");
+
+                            addJokesToArrayList(jsonJokes, mAllJokes);
+                            jsonJokes = rootJSONObject.getJSONArray("hairy");
+
+                            addJokesToArrayList(jsonJokes, mAllJokes);
+                            jsonJokes = rootJSONObject.getJSONArray("bald");
+
+                            addJokesToArrayList(jsonJokes, mAllJokes);
+                            jsonJokes = rootJSONObject.getJSONArray("old");
+
+                            addJokesToArrayList(jsonJokes, mAllJokes);
+                            jsonJokes = rootJSONObject.getJSONArray("poor");
+
+                            addJokesToArrayList(jsonJokes, mAllJokes);
+                            jsonJokes = rootJSONObject.getJSONArray("short");
+
+                            addJokesToArrayList(jsonJokes, mAllJokes);
+                            jsonJokes = rootJSONObject.getJSONArray("skinny");
+
+                            addJokesToArrayList(jsonJokes, mAllJokes);
+                            jsonJokes = rootJSONObject.getJSONArray("tall");
+
+                            addJokesToArrayList(jsonJokes, mAllJokes);
+                            jsonJokes = rootJSONObject.getJSONArray("got");
+
+                            addJokesToArrayList(jsonJokes, mAllJokes);
+                            jsonJokes = rootJSONObject.getJSONArray("like");
+
+                            addJokesToArrayList(jsonJokes, mAllJokes);
+                            jsonJokes = rootJSONObject.getJSONArray("misc");
+
+                            addJokesToArrayList(jsonJokes, mAllJokes);
+
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
