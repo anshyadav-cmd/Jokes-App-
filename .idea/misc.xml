@@ -3,6 +3,7 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="app/src/main/res/layout/activity_fav_jokes.xml" value="0.25181159420289856" />
         <entry key="app/src/main/res/layout/joke_view.xml" value="0.4332755268483922" />
       </map>
     </option>

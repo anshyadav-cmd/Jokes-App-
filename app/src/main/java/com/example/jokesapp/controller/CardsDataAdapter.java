@@ -12,11 +12,14 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.example.jokesapp.R;
+import com.example.jokesapp.model.Joke;
 
 public class CardsDataAdapter extends ArrayAdapter<String> {
 
     private Context mContext;
     private boolean isLiked = false;
+    private JokeLikeListener mJokeLikeListener;
+    private Joke mJoke;
 
     @Override
     public void add(@Nullable String object) {
@@ -26,6 +29,7 @@ public class CardsDataAdapter extends ArrayAdapter<String> {
     public CardsDataAdapter(@NonNull Context context, int resource) {
         super(context, resource);
         mContext = context;
+        mJokeLikeListener = (JokeLikeListener) context;
     }
 
     @Override
@@ -44,9 +48,14 @@ public class CardsDataAdapter extends ArrayAdapter<String> {
                 if(!isLiked){
                     likeButton.setImageResource(R.drawable.liked_filled);
                     isLiked = true;
+
+                    mJoke = new Joke(getItem(position), true);
+                    mJokeLikeListener.jokeIsLiked(mJoke);
                 }else {
                     likeButton.setImageResource(R.drawable.like_empty);
                     isLiked = false;
+                    mJoke = new Joke(getItem(position), false);
+                    mJokeLikeListener.jokeIsLiked(mJoke);
                 }
             }
         });

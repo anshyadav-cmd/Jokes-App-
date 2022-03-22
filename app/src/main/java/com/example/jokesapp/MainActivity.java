@@ -5,7 +5,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 
 import com.example.jokesapp.controller.CardsDataAdapter;
+import com.example.jokesapp.controller.JokeLikeListener;
 import com.example.jokesapp.model.Joke;
+import com.example.jokesapp.model.JokeManger;
 import com.wenchao.cardstack.CardStack;
 
 import org.json.JSONArray;
@@ -17,25 +19,27 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements JokeLikeListener {
 
     private CardStack mCardStack;
     private CardsDataAdapter mCardAdapter;
     private List<Joke> mAllJokes;
+    private JokeManger mJokeManger;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        mJokeManger = new JokeManger(this);
+
         mAllJokes = new ArrayList<>();
 
         mCardStack = (CardStack)findViewById(R.id.container);
-
         mCardStack.setContentResource(R.layout.joke_view);
         mCardStack.setStackMargin(20);
 
-        mCardAdapter = new CardsDataAdapter(getApplicationContext(),0);
+        mCardAdapter = new CardsDataAdapter(this,0);
 
         try {
             JSONObject rootJSONObject = new JSONObject(loadJSONFromAssets());
@@ -76,6 +80,15 @@ public class MainActivity extends AppCompatActivity {
             }
         }catch(JSONException e) {
             e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void jokeIsLiked(Joke joke) {
+        if(joke.isJokeLiked()){
+            mJokeManger.saveJoke(joke);
+        }else {
+            mJokeManger.deleteJoke(joke);
         }
     }
 }
