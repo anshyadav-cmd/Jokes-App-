@@ -3,7 +3,10 @@ package com.example.jokesapp;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
+import android.hardware.Sensor;
+import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -23,6 +26,8 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements JokeLikeListener {
@@ -31,6 +36,11 @@ public class MainActivity extends AppCompatActivity implements JokeLikeListener 
     private CardsDataAdapter mCardAdapter;
     private List<Joke> mAllJokes;
     private JokeManger mJokeManger;
+
+    // shaking
+    private SensorManager mSensorManager;
+    private Sensor mAccelerometer;
+    private ShakeDetector mShakeDetector;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +54,16 @@ public class MainActivity extends AppCompatActivity implements JokeLikeListener 
         mCardStack = (CardStack)findViewById(R.id.container);
         mCardStack.setContentResource(R.layout.joke_view);
         mCardStack.setStackMargin(20);
+
+        mSensorManager = (SensorManager)getSystemService(Context.SENSOR_SERVICE);
+        mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        mShakeDetector = new ShakeDetector();
+        mShakeDetector.setOnShakeListener(new ShakeDetector.OnShakeListener() {
+            @Override
+            public void onShake(int count) {
+                handleShakeEvent();
+            }
+        });
 
         mCardAdapter = new CardsDataAdapter(this,0);
 
@@ -72,6 +92,20 @@ public class MainActivity extends AppCompatActivity implements JokeLikeListener 
                         mCardStack.setAdapter(mCardAdapter);
                     }
                 }).create().start();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        mSensorManager.registerListener(mShakeDetector, mAccelerometer, SensorManager.SENSOR_DELAY_UI);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        mSensorManager.unregisterListener(mShakeDetector);
     }
 
     private String loadJSONFromAssets() {
@@ -122,6 +156,28 @@ public class MainActivity extends AppCompatActivity implements JokeLikeListener 
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         startActivity(new Intent(MainActivity.this, FavJokesActivity.class));
         return super.onOptionsItemSelected(item);
+
+    }
+    private void handleShakeEvent() {
+        new AsyncJob.AsyncJobBuilder<Boolean>()
+                .doInBackground(new AsyncJob.AsyncAction<Boolean>() {
+                    @Override
+                    public Boolean doAsync() {
+                        Collections.shuffle(mAllJokes);
+                        return true;
+                    }
+                })
+                .doWhenFinished(new AsyncJob.AsyncResultAction<Boolean>() {
+                    @Override
+                    public void onResult(Boolean result) {
+                        mCardAdapter.clear();
+                        mCardAdapter = new CardsDataAdapter(MainActivity.this, 0);
+                        for(Joke joke: mAllJokes) {
+                            mCardAdapter.add(joke.getJokeText());
+                        }
+                        mCardStack.setAdapter(mCardAdapter);
+                    }
+                }).create().start();
 
     }
 }
