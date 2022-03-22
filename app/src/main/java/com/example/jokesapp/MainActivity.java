@@ -7,7 +7,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
+import com.arasthel.asyncjob.AsyncJob;
 import com.example.jokesapp.controller.CardsDataAdapter;
 import com.example.jokesapp.controller.JokeLikeListener;
 import com.example.jokesapp.model.Joke;
@@ -45,20 +47,31 @@ public class MainActivity extends AppCompatActivity implements JokeLikeListener 
 
         mCardAdapter = new CardsDataAdapter(this,0);
 
-        try {
-            JSONObject rootJSONObject = new JSONObject(loadJSONFromAssets());
-            JSONArray fatJokes = rootJSONObject.getJSONArray("fat");
-            addJokesToArrayList(fatJokes, mAllJokes);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+        new AsyncJob.AsyncJobBuilder<Boolean>()
+                .doInBackground(new AsyncJob.AsyncAction<Boolean>() {
+                    @Override
+                    public Boolean doAsync() {
+                        // Do some background work
+                        try {
+                            JSONObject rootJSONObject = new JSONObject(loadJSONFromAssets());
+                            JSONArray fatJokes = rootJSONObject.getJSONArray("fat");
+                            addJokesToArrayList(fatJokes, mAllJokes);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        return true;
+                    }
+                })
+                .doWhenFinished(new AsyncJob.AsyncResultAction<Boolean>() {
+                    @Override
+                    public void onResult(Boolean result) {
 
-        for(Joke joke : mAllJokes){
-            mCardAdapter.add(joke.getJokeText());
-        }
-        mCardStack.setAdapter(mCardAdapter);
-
-
+                        for(Joke joke : mAllJokes){
+                            mCardAdapter.add(joke.getJokeText());
+                        }
+                        mCardStack.setAdapter(mCardAdapter);
+                    }
+                }).create().start();
     }
 
     private String loadJSONFromAssets() {
