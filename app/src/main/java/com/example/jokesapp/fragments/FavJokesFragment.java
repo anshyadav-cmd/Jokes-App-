@@ -5,6 +5,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -16,6 +17,7 @@ import com.example.jokesapp.R;
 import com.example.jokesapp.controller.FavJokeListAdapter;
 import com.example.jokesapp.model.Joke;
 import com.example.jokesapp.model.JokeManger;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +28,7 @@ public class FavJokesFragment extends Fragment {
     FavJokeListAdapter mFavJokeListAdapter;
     JokeManger mJokeManger;
     private List<Joke> mJokeList = new ArrayList<>();
+    private Joke deletedJoke;
 
     public FavJokesFragment() {
         // Required empty public constructor
@@ -67,8 +70,43 @@ public class FavJokesFragment extends Fragment {
            mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
            mFavJokeListAdapter = new FavJokeListAdapter(mJokeList,getContext());
            mRecyclerView.setAdapter(mFavJokeListAdapter);
-       }
 
+           ItemTouchHelper itemTouchHelper = new ItemTouchHelper(mSimpleCallBack);
+           itemTouchHelper.attachToRecyclerView(mRecyclerView);
+       }
        return view;
     }
+
+    private ItemTouchHelper.SimpleCallback mSimpleCallBack = new ItemTouchHelper.SimpleCallback(0 , ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+        @Override
+        public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+            return false;
+        }
+
+        @Override
+        public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+            final int position  = viewHolder.getAdapterPosition();
+            switch(direction) {
+                case ItemTouchHelper.LEFT:
+                case ItemTouchHelper.RIGHT:
+
+                    deletedJoke = mJokeList.get(position);
+                    mJokeManger.deleteJoke(mJokeList.get(position));
+                    mJokeList.remove(position);
+                    mFavJokeListAdapter.notifyItemRemoved(position);
+                    mFavJokeListAdapter.notifyDataSetChanged();
+
+                    Snackbar.make(mRecyclerView, "Joke is \"Removed\"", Snackbar.LENGTH_LONG)
+                            .setAction("Undo", new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    mJokeList.add(position, deletedJoke);
+                                    mJokeManger.saveJoke(deletedJoke);
+                                    mFavJokeListAdapter.notifyItemInserted(position);
+                                }
+                            }).show();
+                    break;
+            }
+        }
+    };
 }

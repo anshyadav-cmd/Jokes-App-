@@ -3,8 +3,9 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="app/src/main/res/drawable/ic_troll_face_problem.xml" value="0.1" />
         <entry key="app/src/main/res/layout/activity_fav_jokes.xml" value="0.25181159420289856" />
-        <entry key="app/src/main/res/layout/fav_joke_item.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/fav_joke_item.xml" value="0.22418478260869565" />
         <entry key="app/src/main/res/layout/fragment_fav_jokes.xml" value="0.25181159420289856" />
         <entry key="app/src/main/res/layout/joke_view.xml" value="0.4332755268483922" />
         <entry key="app/src/main/res/layout/splash.xml" value="0.25181159420289856" />
