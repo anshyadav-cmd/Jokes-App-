@@ -109,5 +109,6 @@ public class MainActivity extends AppCompatActivity implements JokeLikeListener 
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         startActivity(new Intent(MainActivity.this, FavJokesActivity.class));
         return super.onOptionsItemSelected(item);
+
     }
 }

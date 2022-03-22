@@ -1,6 +1,7 @@
 package com.example.jokesapp.controller;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,6 +36,17 @@ public class FavJokeListAdapter extends RecyclerView.Adapter<FavJokeViewHolder> 
     public void onBindViewHolder(@NonNull FavJokeViewHolder holder, int position) {
         String jokeText = mJokeList.get(position).getJokeText();
         holder.getTxtFavJoke().setText(jokeText);
+
+        holder.getImgButtonShare().setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Intent.ACTION_SEND);
+                intent.setType("text/plain");
+                intent.putExtra(Intent.EXTRA_SUBJECT, "Mama Fav Joke!");
+                intent.putExtra(Intent.EXTRA_TEXT , jokeText);
+                mContext.startActivity(Intent.createChooser(intent, "Share via"));
+            }
+        });
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.example.jokesapp.controller;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -42,8 +43,9 @@ public class CardsDataAdapter extends ArrayAdapter<String> {
         //supply the layout for your card
         TextView v = (TextView)(contentView.findViewById(R.id.content));
         v.setText(getItem(position));
+
+        // Like Button coding
         ImageButton likeButton = contentView.findViewById(R.id.likeButton);
-        ImageButton shareButton = contentView.findViewById(R.id.shareButton);
 
         alreadyLiked(likeButton, position);
 
@@ -66,8 +68,23 @@ public class CardsDataAdapter extends ArrayAdapter<String> {
             }
         });
 
+        // Share button coding
+        ImageButton shareButton = contentView.findViewById(R.id.shareButton);
+        shareButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(Intent.ACTION_SEND);
+                String shareBody = v.getText().toString();
+                intent.setType("text/plain");
+                intent.putExtra(Intent.EXTRA_SUBJECT, "Mama Joke!");
+                intent.putExtra(Intent.EXTRA_TEXT,shareBody);
+                v.getContext().startActivity(Intent.createChooser(intent,"Share via"));
+            }
+        });
+
         return contentView;
     }
+
     public void alreadyLiked(ImageButton imageButton, int position){
         List<Joke> jokes = mJokeManger.retiriveJokes();
         for(Joke joke : jokes) {
